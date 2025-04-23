@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>MTL UI</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
+</head>
+<body class="container mt-4">
+<h2>Add New MTL</h2>
+<form id="mtlForm">
+    <div class="mb-3">
+        <label for="mtlName" class="form-label">MTL Name</label>
+        <input type="text" class="form-control" id="mtlName" required>
+    </div>
+    <div class="mb-3">
+        <label for="mtlPath" class="form-label">MTL Path</label>
+        <input type="text" class="form-control" id="mtlPath" required>
+    </div>
+    <div class="mb-3">
+        <label for="associatedMtls" class="form-label">Associated MTLs</label>
+        <select multiple class="form-select" id="associatedMtls"></select>
+    </div>
+    <div class="mb-3">
+        <label for="associatedExceptions" class="form-label">Associated Exceptions</label>
+        <select multiple class="form-select" id="associatedExceptions"></select>
+    </div>
+    <button type="submit" class="btn btn-primary">Save MTL</button>
+</form>
+
+<script>
+        $(document).ready(function () {
+            // Populate Associated MTLs
+            $.get("/api/mtls/associated-mtls", function (data) {
+                data.forEach(function (item) {
+                    $("#associatedMtls").append(`<option value="${item}">${item}</option>`);
+                });
+            });
+
+            // Populate Exceptions
+            $.get("/api/mtls/exceptions", function (data) {
+                data.forEach(function (item) {
+                    $("#associatedExceptions").append(`<option value="${item}">${item}</option>`);
+                });
+            });
+
+            // Handle form submit
+            $("#mtlForm").submit(function (e) {
+                e.preventDefault();
+                const mtlData = {
+                    mtlName: $("#mtlName").val(),
+                    mtlPath: $("#mtlPath").val(),
+                    associatedMtls: $("#associatedMtls").val(),
+                    associatedExceptions: $("#associatedExceptions").val()
+                };
+                $.ajax({
+                    url: "/api/mtls",
+                    type: "POST",
+                    contentType: "application/json",
+                    data: JSON.stringify(mtlData),
+                    success: function () {
+                        alert("MTL saved successfully!");
+                        $("#mtlForm")[0].reset();
+                    },
+                    error: function () {
+                        alert("Error saving MTL!");
+                    }
+                });
+            });
+        });
+    </script>
+</body>
+</html>
