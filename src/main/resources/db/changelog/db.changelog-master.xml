@@ -7,7 +7,6 @@
 
     <include file="db/changelog/static/CREATE_MTL_TABLE.xml"/>
     <include file="db/changelog/static/CREATE_EXCEPTION_TABLE.xml"/>
-
     <include file="db/changelog/static/CREATE_MTL_EXCEPTION_TABLE.xml"/>
 
 

@@ -4,11 +4,11 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>MTL and Exceptions Management</title>
-    <!-- Bootstrap CSS -->
+    <!-- Include Bootstrap CSS for layout and styling -->
     <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" rel="stylesheet">
-    <!-- jQuery -->
+    <!-- Include jQuery -->
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-    <!-- Bootstrap JS -->
+    <!-- Include Bootstrap JS -->
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.bundle.min.js"></script>
 </head>
 <body>
@@ -44,14 +44,14 @@
                 <div class="form-row">
                     <div class="form-group col-md-6">
                         <label for="associatedMtls">Associated MTLs</label>
-                        <select multiple class="form-control" id="associatedMtls">
-                            <!-- Dynamic Data -->
+                        <select multiple class="form-control" id="associatedMtls" required>
+                            <!-- Dynamic Data will be populated here -->
                         </select>
                     </div>
                     <div class="form-group col-md-6">
                         <label for="associatedExceptions">Associated Exceptions</label>
-                        <select multiple class="form-control" id="associatedExceptions">
-                            <!-- Dynamic Data -->
+                        <select multiple class="form-control" id="associatedExceptions" required>
+                            <!-- Dynamic Data will be populated here -->
                         </select>
                     </div>
                 </div>
@@ -70,7 +70,9 @@
                         <th>Associated Exceptions</th>
                     </tr>
                     </thead>
-                    <tbody></tbody>
+                    <tbody>
+                    <!-- MTL Data will be populated here -->
+                    </tbody>
                 </table>
             </div>
         </div>
@@ -115,7 +117,9 @@
                         <th>Exception Detail</th>
                     </tr>
                     </thead>
-                    <tbody></tbody>
+                    <tbody>
+                    <!-- Exception Data will be populated here -->
+                    </tbody>
                 </table>
             </div>
         </div>
@@ -123,9 +127,10 @@
 </div>
 
 <script>
+    // Fetch MTL Data from the API
     function fetchMtlData() {
         $.ajax({
-            url: '/api/mtls',
+            url: '/api/mtls', // Change this to the actual API endpoint for fetching MTL data
             method: 'GET',
             success: function (data) {
                 const mtlTableBody = $('#mtl-table tbody');
@@ -136,18 +141,20 @@
                             <td>${item.mtlName}</td>
                             <td>${item.mtlPath}</td>
                             <td>${item.mtlDescription}</td>
-                            <td>${(item.associatedMtls || []).join(', ')}</td>
-                            <td>${(item.associatedExceptions || []).join(', ')}</td>
-                        </tr>`;
+                            <td>${item.associatedMtls.join(', ')}</td>
+                            <td>${item.associatedExceptions.join(', ')}</td>
+                        </tr>
+                    `;
                     mtlTableBody.append(row);
                 });
             }
         });
     }
 
+    // Fetch Exception Data from the API
     function fetchExceptionData() {
         $.ajax({
-            url: '/api/exceptions',
+            url: '/api/exceptions', // Change this to the actual API endpoint for fetching Exception data
             method: 'GET',
             success: function (data) {
                 const exceptionTableBody = $('#exception-table tbody');
@@ -159,16 +166,18 @@
                             <td>${item.exceptionType}</td>
                             <td>${item.product}</td>
                             <td>${item.exceptionDetail}</td>
-                        </tr>`;
+                        </tr>
+                    `;
                     exceptionTableBody.append(row);
                 });
             }
         });
     }
 
+    // Fetch Associated MTLs and Exceptions (for the dropdown)
     function fetchAssociatedData() {
         $.ajax({
-            url: '/api/associated',
+            url: '/api/associated', // Change this to the actual API endpoint for fetching associated MTLs and Exceptions
             method: 'GET',
             success: function (data) {
                 const associatedMtlsSelect = $('#associatedMtls');
@@ -176,38 +185,40 @@
                 associatedMtlsSelect.empty();
                 associatedExceptionsSelect.empty();
 
-                (data.mtls || []).forEach(mtl => {
-                    associatedMtlsSelect.append(`<option value="${mtl.mtlName}">${mtl.mtlName}</option>`);
+                data.mtls.forEach(mtl => {
+                    associatedMtlsSelect.append(`<option value="${mtl}">${mtl}</option>`);
                 });
 
-                (data.exceptions || []).forEach(exception => {
-                    associatedExceptionsSelect.append(`<option value="${exception.exceptionName}">${exception.exceptionName}</option>`);
+                data.exceptions.forEach(exception => {
+                    associatedExceptionsSelect.append(`<option value="${exception}">${exception}</option>`);
                 });
             }
         });
     }
 
+    // Submit MTL form
     $('#mtl-form').submit(function (event) {
         event.preventDefault();
         const mtlData = {
             mtlName: $('#mtlName').val(),
             mtlPath: $('#mtlPath').val(),
             mtlDescription: $('#mtlDescription').val(),
-            associatedMtls: $('#associatedMtls').val() || [],
-            associatedExceptions: $('#associatedExceptions').val() || []
+            associatedMtls: $('#associatedMtls').val(),
+            associatedExceptions: $('#associatedExceptions').val()
         };
 
         $.ajax({
-            url: '/api/mtls',
+            url: '/api/mtl', // Change this to the actual API endpoint for saving MTL data
             method: 'POST',
             contentType: 'application/json',
             data: JSON.stringify(mtlData),
             success: function () {
-                fetchMtlData();
+                fetchMtlData(); // Reload the MTL data after successful save
             }
         });
     });
 
+    // Submit Exception form
     $('#exception-form').submit(function (event) {
         event.preventDefault();
         const exceptionData = {
@@ -218,16 +229,17 @@
         };
 
         $.ajax({
-            url: '/api/exceptions',
+            url: '/api/exception', // Change this to the actual API endpoint for saving Exception data
             method: 'POST',
             contentType: 'application/json',
             data: JSON.stringify(exceptionData),
             success: function () {
-                fetchExceptionData();
+                fetchExceptionData(); // Reload the Exception data after successful save
             }
         });
     });
 
+    // Initial data fetching when the page loads
     $(document).ready(function () {
         fetchMtlData();
         fetchExceptionData();

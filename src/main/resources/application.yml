@@ -8,10 +8,7 @@ server:
   port: 8080
 spring:
   application:
-    name: webshell
-
-
-
+    name: mtlui
 jpa.database-platform: org.hibernate.dialect.H2Dialect
 
 ## Enable Liquibase
@@ -22,6 +19,6 @@ jpa.database-platform: org.hibernate.dialect.H2Dialect
 #spring.liquibase.database-change-log-table: DATABASECHANGELOG
 #
 #spring.datasource.driver-class-name: org.h2.Driver
-#spring.datasource.url: jdbc:h2:file:D:\\2025\\marchLastWeekLeave\\webshellWS\\WEBSHELL_MAIN\\src\\aadddaass
+#spring.datasource.url: jdbc:h2:file:I:\\work\\test
 #spring.datasource.username: root
 #spring.datasource.password: root
