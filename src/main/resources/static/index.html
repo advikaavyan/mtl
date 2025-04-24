@@ -2,66 +2,76 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
+    <title>MTL & Exception Management</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>MTL and Exceptions Management</title>
+
     <!-- Bootstrap CSS -->
     <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" rel="stylesheet">
-    <!-- jQuery -->
-    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-    <!-- Bootstrap JS -->
-    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.bundle.min.js"></script>
+
+    <!-- DataTables CSS -->
+    <link rel="stylesheet" href="https://cdn.datatables.net/1.13.6/css/jquery.dataTables.min.css">
+
+    <style>
+        body {
+            background-color: #f8f9fa;
+            font-family: 'Segoe UI', sans-serif;
+        }
+        .card {
+            margin-top: 1.5rem;
+            box-shadow: 0 0.125rem 0.25rem rgba(0, 0, 0, 0.075);
+            border: none;
+        }
+    </style>
 </head>
 <body>
 
 <div class="container mt-5">
-    <h2>MTL and Exceptions Management</h2>
+    <h2 class="text-center">MTL & Exception Management</h2>
     <ul class="nav nav-tabs" id="myTab" role="tablist">
         <li class="nav-item">
-            <a class="nav-link active" id="mtl-tab" data-toggle="tab" href="#mtl" role="tab" aria-controls="mtl" aria-selected="true">MTL</a>
+            <a class="nav-link active" id="mtl-tab" data-toggle="tab" href="#mtl" role="tab">MTL</a>
         </li>
         <li class="nav-item">
-            <a class="nav-link" id="exception-tab" data-toggle="tab" href="#exception" role="tab" aria-controls="exception" aria-selected="false">Exception</a>
+            <a class="nav-link" id="exception-tab" data-toggle="tab" href="#exception" role="tab">Exception</a>
         </li>
     </ul>
-    <div class="tab-content" id="myTabContent">
-        <!-- MTL Tab Content -->
-        <div class="tab-pane fade show active" id="mtl" role="tabpanel" aria-labelledby="mtl-tab">
-            <form id="mtl-form" class="mt-3">
-                <div class="form-row">
-                    <div class="form-group col-md-4">
-                        <label for="mtlName">MTL Name</label>
-                        <input type="text" class="form-control" id="mtlName" placeholder="MTL Name" required>
-                    </div>
-                    <div class="form-group col-md-4">
-                        <label for="mtlPath">MTL Path</label>
-                        <input type="text" class="form-control" id="mtlPath" placeholder="MTL Path" required>
-                    </div>
-                    <div class="form-group col-md-4">
-                        <label for="mtlDescription">MTL Description</label>
-                        <input type="text" class="form-control" id="mtlDescription" placeholder="MTL Description" required>
-                    </div>
-                </div>
-                <div class="form-row">
-                    <div class="form-group col-md-6">
-                        <label for="associatedMtls">Associated MTLs</label>
-                        <select multiple class="form-control" id="associatedMtls">
-                            <!-- Dynamic Data -->
-                        </select>
-                    </div>
-                    <div class="form-group col-md-6">
-                        <label for="associatedExceptions">Associated Exceptions</label>
-                        <select multiple class="form-control" id="associatedExceptions">
-                            <!-- Dynamic Data -->
-                        </select>
-                    </div>
-                </div>
-                <button type="submit" class="btn btn-primary">Save MTL</button>
-            </form>
 
-            <div class="mt-5">
-                <h4>MTL Table</h4>
-                <table class="table table-bordered" id="mtl-table">
-                    <thead>
+    <div class="tab-content" id="myTabContent">
+        <!-- MTL TAB -->
+        <div class="tab-pane fade show active" id="mtl" role="tabpanel">
+            <div class="card p-4">
+                <form id="mtl-form">
+                    <div class="form-row">
+                        <div class="form-group col-md-4">
+                            <label>MTL Name</label>
+                            <input type="text" class="form-control" id="mtlName" required>
+                        </div>
+                        <div class="form-group col-md-4">
+                            <label>MTL Path</label>
+                            <input type="text" class="form-control" id="mtlPath" required>
+                        </div>
+                        <div class="form-group col-md-4">
+                            <label>MTL Description</label>
+                            <input type="text" class="form-control" id="mtlDescription" required>
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group col-md-6">
+                            <label>Associated MTLs</label>
+                            <select multiple class="form-control" id="associatedMtls"></select>
+                        </div>
+                        <div class="form-group col-md-6">
+                            <label>Associated Exceptions</label>
+                            <select multiple class="form-control" id="associatedExceptions"></select>
+                        </div>
+                    </div>
+                    <button type="submit" class="btn btn-primary">Save MTL</button>
+                </form>
+            </div>
+            <div class="card p-4">
+                <h5>MTL Records</h5>
+                <table class="table table-bordered" id="mtl-table" style="width: 100%">
+                    <thead class="thead-light">
                     <tr>
                         <th>MTL Name</th>
                         <th>MTL Path</th>
@@ -75,39 +85,38 @@
             </div>
         </div>
 
-        <!-- Exception Tab Content -->
-        <div class="tab-pane fade" id="exception" role="tabpanel" aria-labelledby="exception-tab">
-            <form id="exception-form" class="mt-3">
-                <div class="form-row">
-                    <div class="form-group col-md-4">
-                        <label for="exceptionName">Exception Name</label>
-                        <input type="text" class="form-control" id="exceptionName" placeholder="Exception Name" required>
+        <!-- EXCEPTION TAB -->
+        <div class="tab-pane fade" id="exception" role="tabpanel">
+            <div class="card p-4">
+                <form id="exception-form">
+                    <div class="form-row">
+                        <div class="form-group col-md-4">
+                            <label>Exception Name</label>
+                            <input type="text" class="form-control" id="exceptionName" required>
+                        </div>
+                        <div class="form-group col-md-4">
+                            <label>Exception Type</label>
+                            <input type="text" class="form-control" id="exceptionType" required>
+                        </div>
+                        <div class="form-group col-md-4">
+                            <label>Product</label>
+                            <select class="form-control" id="product">
+                                <option value="Type1">Type1</option>
+                                <option value="Type2">Type2</option>
+                            </select>
+                        </div>
                     </div>
-                    <div class="form-group col-md-4">
-                        <label for="exceptionType">Exception Type</label>
-                        <input type="text" class="form-control" id="exceptionType" placeholder="Exception Type" required>
+                    <div class="form-group">
+                        <label>Exception Detail</label>
+                        <textarea class="form-control" id="exceptionDetail" rows="3" required></textarea>
                     </div>
-                    <div class="form-group col-md-4">
-                        <label for="product">Product</label>
-                        <select class="form-control" id="product" required>
-                            <option value="Type1">Type1</option>
-                            <option value="Type2">Type2</option>
-                        </select>
-                    </div>
-                </div>
-                <div class="form-row">
-                    <div class="form-group col-md-12">
-                        <label for="exceptionDetail">Exception Detail</label>
-                        <textarea class="form-control" id="exceptionDetail" rows="3" placeholder="Exception Detail" required></textarea>
-                    </div>
-                </div>
-                <button type="submit" class="btn btn-primary">Save Exception</button>
-            </form>
-
-            <div class="mt-5">
-                <h4>Exception Table</h4>
-                <table class="table table-bordered" id="exception-table">
-                    <thead>
+                    <button type="submit" class="btn btn-primary">Save Exception</button>
+                </form>
+            </div>
+            <div class="card p-4">
+                <h5>Exception Records</h5>
+                <table class="table table-bordered" id="exception-table" style="width: 100%">
+                    <thead class="thead-light">
                     <tr>
                         <th>Exception Name</th>
                         <th>Exception Type</th>
@@ -122,116 +131,187 @@
     </div>
 </div>
 
+<!-- Scripts -->
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.bundle.min.js"></script>
+<script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
+
 <script>
-    function fetchMtlData() {
-        $.ajax({
-            url: '/api/mtls',
-            method: 'GET',
-            success: function (data) {
-                const mtlTableBody = $('#mtl-table tbody');
-                mtlTableBody.empty();
-                data.forEach(item => {
-                    const row = `
-                        <tr>
-                            <td>${item.mtlName}</td>
-                            <td>${item.mtlPath}</td>
-                            <td>${item.mtlDescription}</td>
-                            <td>${(item.associatedMtls || []).join(', ')}</td>
-                            <td>${(item.associatedExceptions || []).join(', ')}</td>
-                        </tr>`;
-                    mtlTableBody.append(row);
-                });
-            }
-        });
+    function loadTables() {
+        fetchMtlData();
+        fetchExceptionData();
+        fetchAssociatedData();
     }
 
-    function fetchExceptionData() {
-        $.ajax({
-            url: '/api/exceptions',
-            method: 'GET',
-            success: function (data) {
-                const exceptionTableBody = $('#exception-table tbody');
-                exceptionTableBody.empty();
-                data.forEach(item => {
-                    const row = `
-                        <tr>
-                            <td>${item.exceptionName}</td>
-                            <td>${item.exceptionType}</td>
-                            <td>${item.product}</td>
-                            <td>${item.exceptionDetail}</td>
-                        </tr>`;
-                    exceptionTableBody.append(row);
+    function fetchMtlDataEE() {
+    $.get('/api/mtls', function (data) {
+        const tableBody = $('#mtl-table tbody').empty();
+        data.forEach(item => {
+            const row = `
+                <tr>
+                    <td>${item.mtlName || ''}</td>
+                    <td>${item.mtlPath || ''}</td>
+                    <td>${item.mtlDescription || ''}</td>
+                    <td>${Array.isArray(item.associatedMtls) ? item.associatedMtls.join(', ') : ''}</td>
+                    <td>${Array.isArray(item.associatedExceptions) ? item.associatedExceptions.join(', ') : ''}</td>
+                </tr>`;
+            tableBody.append(row);
+        });
+
+        if ($.fn.DataTable.isDataTable('#mtl-table')) {
+            $('#mtl-table').DataTable().clear().destroy();
+        }
+        $('#mtl-table').DataTable();
+    });
+}
+
+function fetchMtlData() {
+    $.ajax({
+        url: '/api/mtls',
+        method: 'GET',
+        success: function (data) {
+            const mtlTableBody = $('#mtl-table tbody');
+            mtlTableBody.empty();
+
+            // Make sure the table is initialized only once
+            if (!$.fn.DataTable.isDataTable('#mtl-table')) {
+                $('#mtl-table').DataTable({
+                    paging: true,
+                    searching: true,
+                    ordering: true,
+                    info: true,
+                    data: data,
+                    columns: [
+                        { data: 'mtlName' },
+                        { data: 'mtlPath' },
+                        { data: 'mtlDescription' },
+                        { data: 'associatedMtls', render: function(data) { return Array.isArray(data) ? data.join(', ') : ''; }},
+                        { data: 'associatedExceptions', render: function(data) { return Array.isArray(data) ? data.join(', ') : ''; }}
+                    ]
                 });
+            } else {
+                // Clear the table and add new rows to it
+                var table = $('#mtl-table').DataTable();
+                table.clear();
+                table.rows.add(data); // Add new rows to the table
+                table.draw(); // Redraw the table to show the new data
             }
+        }
+    });
+}
+
+
+    function fetchExceptionDataww() {
+        $.get('/api/exceptions', function (data) {
+            const tableBody = $('#exception-table tbody').empty();
+            data.forEach(item => {
+                const row = `
+                    <tr>
+                        <td>${item.exceptionName}</td>
+                        <td>${item.exceptionType}</td>
+                        <td>${item.product}</td>
+                        <td>${item.exceptionDetail}</td>
+                    </tr>`;
+                tableBody.append(row);
+            });
+            if ($.fn.DataTable.isDataTable('#exception-table')) {
+                $('#exception-table').DataTable().clear().destroy();
+            }
+            $('#exception-table').DataTable();
         });
     }
+    function fetchExceptionData() {
+    $.ajax({
+        url: '/api/exceptions',
+        method: 'GET',
+        success: function (data) {
+            const exceptionTableBody = $('#exception-table tbody');
+            exceptionTableBody.empty();
+
+            // Ensure the table is initialized only once
+            if (!$.fn.DataTable.isDataTable('#exception-table')) {
+                $('#exception-table').DataTable({
+                    paging: true,
+                    searching: true,
+                    ordering: true,
+                    info: true,
+                    data: data,
+                    columns: [
+                        { data: 'exceptionName' },
+                        { data: 'exceptionType' },
+                        { data: 'product' },
+                        { data: 'exceptionDetail' }
+                    ]
+                });
+            } else {
+                // Clear the table and add new rows to it
+                var table = $('#exception-table').DataTable();
+                table.clear();
+                table.rows.add(data); // Add new rows to the table
+                table.draw(); // Redraw the table to show the new data
+            }
+        }
+    });
+}
+
+
 
     function fetchAssociatedData() {
-        $.ajax({
-            url: '/api/associated',
-            method: 'GET',
-            success: function (data) {
-                const associatedMtlsSelect = $('#associatedMtls');
-                const associatedExceptionsSelect = $('#associatedExceptions');
-                associatedMtlsSelect.empty();
-                associatedExceptionsSelect.empty();
-
-                (data.mtls || []).forEach(mtl => {
-                    associatedMtlsSelect.append(`<option value="${mtl.mtlName}">${mtl.mtlName}</option>`);
-                });
-
-                (data.exceptions || []).forEach(exception => {
-                    associatedExceptionsSelect.append(`<option value="${exception.exceptionName}">${exception.exceptionName}</option>`);
-                });
-            }
+        $.get('/api/associated', function (data) {
+            const mtlSelect = $('#associatedMtls').empty();
+            const exSelect = $('#associatedExceptions').empty();
+            (data.mtls || []).forEach(m => {
+                mtlSelect.append(`<option value="${m.mtlName}">${m.mtlName}</option>`);
+            });
+            (data.exceptions || []).forEach(e => {
+                exSelect.append(`<option value="${e.exceptionName}">${e.exceptionName}</option>`);
+            });
         });
     }
 
-    $('#mtl-form').submit(function (event) {
-        event.preventDefault();
-        const mtlData = {
+    $('#mtl-form').submit(function (e) {
+        e.preventDefault();
+        const data = {
             mtlName: $('#mtlName').val(),
             mtlPath: $('#mtlPath').val(),
             mtlDescription: $('#mtlDescription').val(),
             associatedMtls: $('#associatedMtls').val() || [],
             associatedExceptions: $('#associatedExceptions').val() || []
         };
-
         $.ajax({
             url: '/api/mtls',
             method: 'POST',
             contentType: 'application/json',
-            data: JSON.stringify(mtlData),
+            data: JSON.stringify(data),
             success: function () {
-                fetchMtlData();
+                $('#mtl-form')[0].reset();
+                loadTables();
             }
         });
     });
 
-    $('#exception-form').submit(function (event) {
-        event.preventDefault();
-        const exceptionData = {
+    $('#exception-form').submit(function (e) {
+        e.preventDefault();
+        const data = {
             exceptionName: $('#exceptionName').val(),
             exceptionType: $('#exceptionType').val(),
             product: $('#product').val(),
             exceptionDetail: $('#exceptionDetail').val()
         };
-
         $.ajax({
             url: '/api/exceptions',
             method: 'POST',
             contentType: 'application/json',
-            data: JSON.stringify(exceptionData),
+            data: JSON.stringify(data),
             success: function () {
-                fetchExceptionData();
+                $('#exception-form')[0].reset();
+                loadTables();
             }
         });
     });
 
     $(document).ready(function () {
-        fetchMtlData();
-        fetchExceptionData();
-        fetchAssociatedData();
+        loadTables();
     });
 </script>
 

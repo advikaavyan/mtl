@@ -1,0 +1,233 @@
+<!-- BOOTSTRAP 5 VERSION -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>MTL & Exception Management</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <!-- Bootstrap 5 CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+
+    <!-- DataTables -->
+    <link rel="stylesheet" href="https://cdn.datatables.net/1.13.6/css/jquery.dataTables.min.css">
+
+    <style>
+    body {
+      background-color: #f8f9fa;
+    }
+    h2 {
+      margin-top: 2rem;
+    }
+  </style>
+</head>
+<body>
+
+<div class="container">
+    <h2 class="text-center">MTL & Exception Management</h2>
+
+    <ul class="nav nav-tabs mt-4" id="myTab" role="tablist">
+        <li class="nav-item" role="presentation">
+            <button class="nav-link active" id="mtl-tab" data-bs-toggle="tab" data-bs-target="#mtl" type="button">MTL</button>
+        </li>
+        <li class="nav-item" role="presentation">
+            <button class="nav-link" id="exception-tab" data-bs-toggle="tab" data-bs-target="#exception" type="button">Exception</button>
+        </li>
+    </ul>
+
+    <div class="tab-content" id="myTabContent">
+        <!-- MTL Tab -->
+        <div class="tab-pane fade show active p-4" id="mtl">
+            <form>
+                <div class="row g-3">
+                    <div class="col-md-4">
+                        <label for="mtlName" class="form-label">MTL Name</label>
+                        <input type="text" class="form-control" id="mtlName" required>
+                    </div>
+                    <div class="col-md-4">
+                        <label for="mtlPath" class="form-label">MTL Path</label>
+                        <input type="text" class="form-control" id="mtlPath" required>
+                    </div>
+                    <div class="col-md-4">
+                        <label for="mtlDescription" class="form-label">Description</label>
+                        <input type="text" class="form-control" id="mtlDescription" required>
+                    </div>
+                    <div class="col-md-6">
+                        <label for="associatedMtls" class="form-label">Associated MTLs</label>
+                        <select class="form-select" id="associatedMtls" multiple></select>
+                    </div>
+                    <div class="col-md-6">
+                        <label for="associatedExceptions" class="form-label">Associated Exceptions</label>
+                        <select class="form-select" id="associatedExceptions" multiple></select>
+                    </div>
+                </div>
+                <button class="btn btn-primary mt-3">Save MTL</button>
+            </form>
+        </div>
+
+        <!-- Exception Tab -->
+        <div class="tab-pane fade p-4" id="exception">
+            <form>
+                <div class="row g-3">
+                    <div class="col-md-4">
+                        <label for="exceptionName" class="form-label">Exception Name</label>
+                        <input type="text" class="form-control" id="exceptionName" required>
+                    </div>
+                    <div class="col-md-4">
+                        <label for="exceptionType" class="form-label">Exception Type</label>
+                        <input type="text" class="form-control" id="exceptionType" required>
+                    </div>
+                    <div class="col-md-4">
+                        <label for="product" class="form-label">Product</label>
+                        <select class="form-select" id="product">
+                            <option value="Type1">Type1</option>
+                            <option value="Type2">Type2</option>
+                        </select>
+                    </div>
+                    <div class="col-12">
+                        <label for="exceptionDetail" class="form-label">Detail</label>
+                        <textarea class="form-control" id="exceptionDetail" rows="3"></textarea>
+                    </div>
+                </div>
+                <button class="btn btn-primary mt-3">Save Exception</button>
+            </form>
+        </div>
+    </div>
+</div>
+
+<!-- Bootstrap JS -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
+
+
+
+<!-- JavaScript logic same as before -->
+
+
+
+<script>
+    function fetchMtlData() {
+        $.ajax({
+            url: '/api/mtls',
+            method: 'GET',
+            success: function (data) {
+                const mtlTableBody = $('#mtl-table tbody');
+                mtlTableBody.empty();
+                data.forEach(item => {
+                    const row = `
+                        <tr>
+                            <td>${item.mtlName}</td>
+                            <td>${item.mtlPath}</td>
+                            <td>${item.mtlDescription}</td>
+                            <td>${(item.associatedMtls || []).join(', ')}</td>
+                            <td>${(item.associatedExceptions || []).join(', ')}</td>
+                        </tr>`;
+                    mtlTableBody.append(row);
+                });
+
+                if ($.fn.DataTable.isDataTable('#mtl-table')) {
+                    $('#mtl-table').DataTable().clear().destroy();
+                }
+                $('#mtl-table').show().DataTable();
+            }
+        });
+    }
+
+    function fetchExceptionData() {
+        $.ajax({
+            url: '/api/exceptions',
+            method: 'GET',
+            success: function (data) {
+                const exceptionTableBody = $('#exception-table tbody');
+                exceptionTableBody.empty();
+                data.forEach(item => {
+                    const row = `
+                        <tr>
+                            <td>${item.exceptionName}</td>
+                            <td>${item.exceptionType}</td>
+                            <td>${item.product}</td>
+                            <td>${item.exceptionDetail}</td>
+                        </tr>`;
+                    exceptionTableBody.append(row);
+                });
+
+                if ($.fn.DataTable.isDataTable('#exception-table')) {
+                    $('#exception-table').DataTable().clear().destroy();
+                }
+                $('#exception-table').show().DataTable();
+            }
+        });
+    }
+
+    function fetchAssociatedData() {
+        $.ajax({
+            url: '/api/associated',
+            method: 'GET',
+            success: function (data) {
+                const associatedMtlsSelect = $('#associatedMtls');
+                const associatedExceptionsSelect = $('#associatedExceptions');
+                associatedMtlsSelect.empty();
+                associatedExceptionsSelect.empty();
+
+                (data.mtls || []).forEach(mtl => {
+                    associatedMtlsSelect.append(`<option value="${mtl.mtlName}">${mtl.mtlName}</option>`);
+                });
+
+                (data.exceptions || []).forEach(exception => {
+                    associatedExceptionsSelect.append(`<option value="${exception.exceptionName}">${exception.exceptionName}</option>`);
+                });
+            }
+        });
+    }
+
+    $('#mtl-form').submit(function (event) {
+        event.preventDefault();
+        const mtlData = {
+            mtlName: $('#mtlName').val(),
+            mtlPath: $('#mtlPath').val(),
+            mtlDescription: $('#mtlDescription').val(),
+            associatedMtls: $('#associatedMtls').val() || [],
+            associatedExceptions: $('#associatedExceptions').val() || []
+        };
+
+        $.ajax({
+            url: '/api/mtls',
+            method: 'POST',
+            contentType: 'application/json',
+            data: JSON.stringify(mtlData),
+            success: function () {
+                fetchMtlData();
+            }
+        });
+    });
+
+    $('#exception-form').submit(function (event) {
+        event.preventDefault();
+        const exceptionData = {
+            exceptionName: $('#exceptionName').val(),
+            exceptionType: $('#exceptionType').val(),
+            product: $('#product').val(),
+            exceptionDetail: $('#exceptionDetail').val()
+        };
+
+        $.ajax({
+            url: '/api/exceptions',
+            method: 'POST',
+            contentType: 'application/json',
+            data: JSON.stringify(exceptionData),
+            success: function () {
+                fetchExceptionData();
+            }
+        });
+    });
+
+    $(document).ready(function () {
+        fetchMtlData();
+        fetchExceptionData();
+        fetchAssociatedData();
+    });
+</script>
+
+</body>
+</html>
